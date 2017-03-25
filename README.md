@@ -1,5 +1,5 @@
 # Indeed-Job-Search
-###Example usage:
+### Example usage:
 ```
  indeed.py -q <jobquery> -l <location> -r <radius> 
 ```
