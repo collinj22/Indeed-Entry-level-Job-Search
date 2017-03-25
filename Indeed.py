@@ -73,7 +73,7 @@ def entry_level_check(jobs):
     entry_level.reset_index(drop=True,inplace=True)
     return entry_level
 
-# return pandas dataframe with jobs and description and entry level status
+# return pandas dataframe with jobs and description and entry level status and outputs excel file
 def main(argv):
     query = ''
     location = ''
@@ -81,7 +81,7 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hq:l:r:",["query=","loc=","radius="])
     except getopt.GetoptError:
-        print('test.py -i <inputfile> -o <outputfile>')
+        print('indeed.py -q <jobquery> -l <location> -r <radius>')
         sys.exit(2)
     if len(sys.argv) == 1:
         print('indeed.py -q <jobquery> -l <location> -r <radius>')
