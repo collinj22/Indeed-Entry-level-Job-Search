@@ -8,6 +8,7 @@ import re
 import time
 from bs4 import BeautifulSoup
 import pyprind
+import openpyxl
 
 # Funtion grabs 100 results and returns them as a dataframe
 def get_indeed_job_list(query,radius,location):
