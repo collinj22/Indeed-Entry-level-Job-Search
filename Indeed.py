@@ -14,9 +14,9 @@ import openpyxl
 # Function grabs 100 results and returns them as a dataframe
 def get_indeed_job_list(query, radius, location):
     client = IndeedClient(publisher=2863621289879018)
-    bar = pyprind.ProgBar(4, title='Searching For Jobs')
-    resultspd = pd.DataFrame()
-    for start in range(0, 100, 25):
+    progress_bar = pyprind.ProgBar(4, title='Searching For Jobs')
+    results_pd = pd.DataFrame()
+    for results in range(0, 100, 25):
         params = {
             'q': query,
             'radius': radius,
@@ -24,25 +24,25 @@ def get_indeed_job_list(query, radius, location):
             'userip': "1.2.3.4",
             'limit': '25',
             'useragent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)",
-            'start': start
+            'start': results
         }
         search_response = client.search(**params)
-        resultspd = pd.concat([resultspd, pd.DataFrame.from_dict(search_response['results'])], axis=0)
-        bar.update()
-    resultspd.reset_index(drop=True, inplace=True)
-    resultspd['date'] = pd.to_datetime(resultspd.date)
-    resultspd.drop(
+        results_pd = pd.concat([results_pd, pd.DataFrame.from_dict(search_response['results'])], axis=0)
+        progress_bar.update()
+    results_pd.reset_index(drop=True, inplace=True)
+    results_pd['date'] = pd.to_datetime(results_pd.date)
+    results_pd.drop(
         ['country', 'formattedLocation', 'formattedLocationFull', 'onmousedown', 'stations', 'state', 'sponsored'],
         axis=1, inplace=True)
-    return resultspd
+    return results_pd  # returns the search results as a pandas data frame
 
 
 # get descriptions of jobs and add to pandas dataframe
 def get_descriptions(jobs):
     bar = pyprind.ProgBar(len(jobs), title='Scraping Job Descriptions')
     description = pd.DataFrame()
-    for joburl in jobs.url:
-        html = urllib.request.urlopen(joburl).read()
+    for job_url in jobs.url:
+        html = urllib.request.urlopen(job_url).read()
         soup = BeautifulSoup(html, 'html.parser')
         texts = soup.findAll(text=True)
 
@@ -53,9 +53,9 @@ def get_descriptions(jobs):
                 return False
             return True
 
-        descriptionhtml = list(filter(visible, texts))
-        descriptionhtml = [a for a in descriptionhtml if a != '\n']  # removes new lines
-        description = description.append([[descriptionhtml]])
+        description_html = list(filter(visible, texts))
+        description_html = [a for a in description_html if a != '\n']  # removes new lines
+        description = description.append([[description_html]])
         description.reset_index(drop=True, inplace=True)
         bar.update()
     return description
@@ -65,20 +65,20 @@ def get_descriptions(jobs):
 def entry_level_check(jobs):
     entry_level_lookup = ['entry', 'Entry', 'entry level', 'Entry level', '0-1', '0-2', '0-3', '0-4', '0-5']
     entry_level = pd.DataFrame()
-    bar = pyprind.ProgBar(len(jobs.description), title='Checking For Entry Level')
+    progress_bar = pyprind.ProgBar(len(jobs.description), title='Checking For Entry Level')
 
     def check_description(job):
         for sentence in range(0, len(jobs.description[job])):
-            for line in entry_level_lookup:  # check jobs.description[job][sentence] for entrylevel
+            for line in entry_level_lookup:  # check jobs.description[job][sentence] for entry level
                 if line in jobs.description[job][sentence]:
                     return True
 
     for job in range(0, len(jobs.description)):
-        if check_description(job) == True:  # set column in pandas dataframe to 1
+        if check_description(job):  # set column in pandas dataframe to 1 if true
             entry_level = entry_level.append([1])
         else:
             entry_level = entry_level.append([0])
-        bar.update()
+        progress_bar.update()
     entry_level.reset_index(drop=True, inplace=True)
     return entry_level
 
