@@ -1,4 +1,4 @@
-# Indeed-Job-Search
+# Indeed-Entry-Level-Job-Search
 ### Example usage:
 ```
  indeed.py -q <jobquery> -l <location> -r <radius> 

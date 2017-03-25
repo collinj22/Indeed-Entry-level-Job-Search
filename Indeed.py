@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 import pyprind
 import openpyxl
 
-# Funtion grabs 100 results and returns them as a dataframe
+# Function grabs 100 results and returns them as a dataframe
 def get_indeed_job_list(query,radius,location):
     client = IndeedClient(publisher = 2863621289879018)
     bar = pyprind.ProgBar(4, title='Searching For Jobs')
@@ -56,16 +56,16 @@ def get_descriptions(jobs):
 
 # Search description for signs of an entry level job and return 1 if entry level
 def entry_level_check(jobs):
-    entry_level_lookup = ['entry', 'Entry','entry level','Entry level','0-1','0-2','0-3','0-4','0-5']
+    entry_level_lookup = ['entry', 'Entry', 'entry level', 'Entry level', '0-1', '0-2', '0-3', '0-4', '0-5']
     entry_level = pd.DataFrame()
     bar = pyprind.ProgBar(len(jobs.description), title='Checking For Entry Level')
     def check_description(job):
             for sentence in range(0,len(jobs.description[job])):
-                for line in entry_level_lookup: #check jobs.description[job][sentence] for entrylevel
+                for line in entry_level_lookup:  # check jobs.description[job][sentence] for entrylevel
                     if line in jobs.description[job][sentence]:
                         return True
     for job in range(0,len(jobs.description)):
-        if check_description(job) == True: # set column in pandas dataframe to 1
+        if check_description(job) == True:  # set column in pandas dataframe to 1
             entry_level = entry_level.append([1])
         else:
             entry_level = entry_level.append([0])
