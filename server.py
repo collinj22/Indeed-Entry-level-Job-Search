@@ -3,6 +3,7 @@ import Indeed
 import pandas as pd
 import openpyxl
 import time
+import os
 
 
 class IndeedJobSearch(server.App):
@@ -46,6 +47,6 @@ class IndeedJobSearch(server.App):
         filename = params['job'] + '-' + params['location'] + '-' + params['radius'] + '-' + timestr + '.xlsx'
         df.to_excel(filename)
 
-
-app = IndeedJobSearch()
-app.launch(port=9093)
+if __name__ == '__main__':
+    app = IndeedJobSearch()
+    app.launch(host='0.0.0.0', port=int(os.environ.get('PORT', '5000')))

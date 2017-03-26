@@ -9,3 +9,4 @@ time
 bs4
 pyprind
 openpyxl
+spyre
