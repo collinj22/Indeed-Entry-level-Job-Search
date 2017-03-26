@@ -1,5 +1,4 @@
 matplotlib
-getopt
 indeed
 pandas
 urllib.request
