@@ -5,10 +5,8 @@ from indeed import IndeedClient
 import pandas as pd
 import urllib.request
 import re
-import time
 from bs4 import BeautifulSoup
 import pyprind
-import openpyxl
 
 
 # Function grabs 100 results and returns them as a dataframe
