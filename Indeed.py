@@ -25,7 +25,6 @@ def get_indeed_job_list(query, location, radius):
             'start': numb_results
         }
         search_response = client.search(**params)
-        print(search_response)
         results_pd = pd.concat([results_pd, pd.DataFrame.from_dict(search_response['results'])], axis=0)
         progress_bar.update()
     if len(results_pd) == 0:
@@ -33,7 +32,7 @@ def get_indeed_job_list(query, location, radius):
     results_pd.reset_index(drop=True, inplace=True)
     results_pd['date'] = pd.to_datetime(results_pd.date)
     results_pd.drop(
-        ['country', 'formattedLocation', 'formattedLocationFull', 'onmousedown', 'stations', 'state', 'sponsored'],
+        ['source','expired','country', 'formattedLocation', 'formattedLocationFull', 'onmousedown', 'stations', 'state', 'sponsored'],
         axis=1, inplace=True)
     return results_pd  # returns the search results as a pandas data frame
 
