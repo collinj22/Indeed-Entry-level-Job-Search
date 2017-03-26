@@ -12,7 +12,7 @@ import openpyxl
 
 
 # Function grabs 100 results and returns them as a dataframe
-def get_indeed_job_list(query, radius, location):
+def get_indeed_job_list(query, location, radius):
     client = IndeedClient(publisher=2863621289879018)
     progress_bar = pyprind.ProgBar(4, title='Searching For Jobs')
     results_pd = pd.DataFrame()
@@ -29,8 +29,11 @@ def get_indeed_job_list(query, radius, location):
         search_response = client.search(**params)
         results_pd = pd.concat([results_pd, pd.DataFrame.from_dict(search_response['results'])], axis=0)
         progress_bar.update()
+    if len(results_pd == 0):
+        print('Search did not return any jobs')
+        sys.exit()
     results_pd.reset_index(drop=True, inplace=True)
-    # results_pd['date'] = pd.to_datetime(results_pd.date)
+    results_pd['date'] = pd.to_datetime(results_pd.date)
     results_pd.drop(
         ['country', 'formattedLocation', 'formattedLocationFull', 'onmousedown', 'stations', 'state', 'sponsored'],
         axis=1, inplace=True)
@@ -82,9 +85,10 @@ def entry_level_check(jobs):
     entry_level.reset_index(drop=True, inplace=True)
     return entry_level
 
+
 # call get _indeed_job_list and append description and entry level status
-def create_df(query, radius, location):
-    jobs = get_indeed_job_list(query, radius, location)
+def create_df(query, location, radius):
+    jobs = get_indeed_job_list(query, location, radius)
     jobs['description'] = get_descriptions(jobs)
     jobs['entry_level'] = entry_level_check(jobs)
     return jobs
@@ -117,6 +121,7 @@ def main(argv):
     timestr = time.strftime("%Y%m%d-%H%M%S")
     filename = query + '-' + radius + '-' + location + '-' + timestr + '.xlsx'
     jobs.to_excel(filename)
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
