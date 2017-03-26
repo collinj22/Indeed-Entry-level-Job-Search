@@ -1,1 +1,1 @@
-web: python Indeed.py
+web: python server.py
