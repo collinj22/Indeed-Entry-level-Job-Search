@@ -30,7 +30,7 @@ def get_indeed_job_list(query, radius, location):
         results_pd = pd.concat([results_pd, pd.DataFrame.from_dict(search_response['results'])], axis=0)
         progress_bar.update()
     results_pd.reset_index(drop=True, inplace=True)
-    results_pd['date'] = pd.to_datetime(results_pd.date)
+    # results_pd['date'] = pd.to_datetime(results_pd.date)
     results_pd.drop(
         ['country', 'formattedLocation', 'formattedLocationFull', 'onmousedown', 'stations', 'state', 'sponsored'],
         axis=1, inplace=True)
@@ -63,7 +63,7 @@ def get_descriptions(jobs):
 
 # Search description for signs of an entry level job and return 1 if entry level
 def entry_level_check(jobs):
-    entry_level_lookup = ['entry', 'Entry', 'entry level', 'Entry level', '0-1', '0-2', '0-3', '0-4', '0-5']
+    entry_level_lookup = {'entry', 'Entry', 'entry level', 'Entry level', ' 0-1 ', ' 0-2 ', ' 0-3 ', ' 0-4 ', ' 0-5 '}
     entry_level = pd.DataFrame()
     progress_bar = pyprind.ProgBar(len(jobs.description), title='Checking For Entry Level')
 
@@ -81,6 +81,13 @@ def entry_level_check(jobs):
         progress_bar.update()
     entry_level.reset_index(drop=True, inplace=True)
     return entry_level
+
+# call get _indeed_job_list and append description and entry level status
+def create_df(query, radius, location):
+    jobs = get_indeed_job_list(query, radius, location)
+    jobs['description'] = get_descriptions(jobs)
+    jobs['entry_level'] = entry_level_check(jobs)
+    return jobs
 
 
 # return pandas dataframe with jobs and description and entry level status and outputs excel file
@@ -106,14 +113,10 @@ def main(argv):
             location = arg
         elif opt in ("-r", "--radius"):
             radius = arg
-    jobs = get_indeed_job_list(query, radius, location)
-    jobs['description'] = get_descriptions(jobs)
-    jobs['entry_level'] = entry_level_check(jobs)
+    jobs = create_df(query, location, radius)
     timestr = time.strftime("%Y%m%d-%H%M%S")
     filename = query + '-' + radius + '-' + location + '-' + timestr + '.xlsx'
     jobs.to_excel(filename)
-    return jobs
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])
