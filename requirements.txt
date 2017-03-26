@@ -4,4 +4,4 @@ pandas
 bs4
 pyprind
 openpyxl
-spyre
+DataSpyre
