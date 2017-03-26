@@ -1,9 +1,6 @@
 matplotlib
 indeed
 pandas
-urllib.request
-re
-time
 bs4
 pyprind
 openpyxl
