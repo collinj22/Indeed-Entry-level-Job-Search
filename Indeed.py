@@ -16,7 +16,7 @@ def get_indeed_job_list(query, location, radius):
     client = IndeedClient(publisher=2863621289879018)
     progress_bar = pyprind.ProgBar(4, title='Searching For Jobs')
     results_pd = pd.DataFrame()
-    for results in range(0, 100, 25):
+    for numb_results in range(0, 100, 25):
         params = {
             'q': query,
             'radius': radius,
@@ -24,14 +24,14 @@ def get_indeed_job_list(query, location, radius):
             'userip': "1.2.3.4",
             'limit': '25',
             'useragent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)",
-            'start': results
+            'start': numb_results
         }
         search_response = client.search(**params)
+        print(search_response)
         results_pd = pd.concat([results_pd, pd.DataFrame.from_dict(search_response['results'])], axis=0)
         progress_bar.update()
-    if len(results_pd == 0):
-        print('Search did not return any jobs')
-        sys.exit()
+    if len(results_pd) == 0:
+        sys.exit('Search did not return any jobs')
     results_pd.reset_index(drop=True, inplace=True)
     results_pd['date'] = pd.to_datetime(results_pd.date)
     results_pd.drop(
@@ -86,42 +86,9 @@ def entry_level_check(jobs):
     return entry_level
 
 
-# call get _indeed_job_list and append description and entry level status
-def create_df(query, location, radius):
+# return pandas dataframe with jobs and description and entry level status and outputs excel file
+def main(query, location, radius):
     jobs = get_indeed_job_list(query, location, radius)
     jobs['description'] = get_descriptions(jobs)
     jobs['entry_level'] = entry_level_check(jobs)
     return jobs
-
-
-# return pandas dataframe with jobs and description and entry level status and outputs excel file
-def main(argv):
-    query = ''
-    location = ''
-    radius = ''
-    try:
-        opts, args = getopt.getopt(argv, "hq:l:r:", ["query=", "loc=", "radius="])
-    except getopt.GetoptError:
-        print('indeed.py -q <jobquery> -l <location> -r <radius>')
-        sys.exit(2)
-    if len(sys.argv) == 1:
-        print('indeed.py -q <jobquery> -l <location> -r <radius>')
-        sys.exit()
-    for opt, arg in opts:
-        if opt == '-h':
-            print('indeed.py -q <jobquery> -l <location> -r <radius>')
-            sys.exit()
-        elif opt in ("-q", "--query"):
-            query = arg
-        elif opt in ("-l", "--loc"):
-            location = arg
-        elif opt in ("-r", "--radius"):
-            radius = arg
-    jobs = create_df(query, location, radius)
-    timestr = time.strftime("%Y%m%d-%H%M%S")
-    filename = query + '-' + radius + '-' + location + '-' + timestr + '.xlsx'
-    jobs.to_excel(filename)
-
-
-if __name__ == "__main__":
-    main(sys.argv[1:])
