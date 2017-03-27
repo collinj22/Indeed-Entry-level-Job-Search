@@ -44,11 +44,14 @@ class IndeedJobSearch(server.App):
         df = Indeed.main(params['job'], params['location'], params['radius'])
         return df
 
-    def results_xlsx(self, params):
-        timestr = time.strftime("%Y%m%d-%H%M%S")
-        filename = params['job'] + '-' + params['location'] + '-' + params['radius'] + '-' + timestr + '.xlsx'
-        df.to_excel(filename)
-
+    def getDownload(self, params):
+        # timestr = time.strftime("%Y%m%d-%H%M%S")
+        # filename = params['job'] + '-' + params['location'] + '-' + params['radius'] + '-' + timestr + '.xlsx'
+        df = self.getData(params)
+        buffer = io.StringIO()
+        df.to_excel(buffer)
+        filepath = buffer
+        return filepath
 
 if __name__ == '__main__':
     app = IndeedJobSearch()
