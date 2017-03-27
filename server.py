@@ -5,6 +5,8 @@ import openpyxl
 import time
 import os
 
+server.include_df_index = True
+
 
 class IndeedJobSearch(server.App):
     title = "Indeed Job Search"
@@ -27,7 +29,7 @@ class IndeedJobSearch(server.App):
                  "id": "update_data"},
                 {"type": "button",
                  "label": "Download Excel File",
-                 "id": "results_xslx"}]
+                 "id": "results_xlsx"}]
 
     outputs = [{"type": "table",
                 "id": "table_id",
@@ -35,7 +37,7 @@ class IndeedJobSearch(server.App):
                 "tab": "Table",
                 "on_page_load": False},
                {'type': 'download',
-                'id': 'results_csv',
+                'id': 'results_xlsx',
                 'on_page_load': False}]
 
     def getData(self, params):
@@ -46,6 +48,7 @@ class IndeedJobSearch(server.App):
         timestr = time.strftime("%Y%m%d-%H%M%S")
         filename = params['job'] + '-' + params['location'] + '-' + params['radius'] + '-' + timestr + '.xlsx'
         df.to_excel(filename)
+
 
 if __name__ == '__main__':
     app = IndeedJobSearch()
