@@ -43,14 +43,7 @@ class IndeedJobSearch(server.App):
     def getData(self, params):
         df = Indeed.main(params['job'], params['location'], params['radius'])
         return df
-
-    def getDownload(self, params):
-        df = self.getData(params)
-        buffer = io.StringIO()
-        df.to_csv(buffer, index=False, encoding='utf-8')
-        filepath = buffer
-        return filepath
-
+    
 if __name__ == '__main__':
     app = IndeedJobSearch()
     app.launch(host='0.0.0.0', port=int(os.environ.get('PORT', '5000')))
