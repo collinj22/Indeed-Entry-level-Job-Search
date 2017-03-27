@@ -4,7 +4,7 @@ import pandas as pd
 import openpyxl
 import time
 import os
-
+import io
 server.include_df_index = True
 
 
@@ -49,7 +49,7 @@ class IndeedJobSearch(server.App):
         # filename = params['job'] + '-' + params['location'] + '-' + params['radius'] + '-' + timestr + '.xlsx'
         df = self.getData(params)
         buffer = io.StringIO()
-        df.to_excel(buffer)
+        df.to_csv(buffer, index=False, encoding='utf-8')
         filepath = buffer
         return filepath
 
