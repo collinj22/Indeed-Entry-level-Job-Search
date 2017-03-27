@@ -6,7 +6,7 @@ import time
 import os
 import io
 server.include_df_index = True
-
+pd.set_option('display.max_colwidth', -1)
 
 class IndeedJobSearch(server.App):
     title = "Indeed Job Search"
