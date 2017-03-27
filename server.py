@@ -29,7 +29,7 @@ class IndeedJobSearch(server.App):
                  "id": "update_data"},
                 {"type": "button",
                  "label": "Download Excel File",
-                 "id": "results_xlsx"}]
+                 "id": "results_csv"}]
 
     outputs = [{"type": "table",
                 "id": "table_id",
@@ -37,7 +37,7 @@ class IndeedJobSearch(server.App):
                 "tab": "Table",
                 "on_page_load": False},
                {'type': 'download',
-                'id': 'results_xlsx',
+                'id': 'results_csv',
                 'on_page_load': False}]
 
     def getData(self, params):
@@ -45,8 +45,6 @@ class IndeedJobSearch(server.App):
         return df
 
     def getDownload(self, params):
-        # timestr = time.strftime("%Y%m%d-%H%M%S")
-        # filename = params['job'] + '-' + params['location'] + '-' + params['radius'] + '-' + timestr + '.xlsx'
         df = self.getData(params)
         buffer = io.StringIO()
         df.to_csv(buffer, index=False, encoding='utf-8')
