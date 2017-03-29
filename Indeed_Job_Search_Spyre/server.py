@@ -1,12 +1,14 @@
 from spyre import server
-import Indeed
+import IndeedSearch
 import pandas as pd
 import openpyxl
 import time
 import os
 import io
+
 server.include_df_index = True
 pd.set_option('display.max_colwidth', -1)
+
 
 class IndeedJobSearch(server.App):
     title = "Indeed Job Search"
@@ -41,9 +43,10 @@ class IndeedJobSearch(server.App):
                 'on_page_load': False}]
 
     def getData(self, params):
-        df = Indeed.main(params['job'], params['location'], params['radius'])
-        return df
-    
+        df = IndeedSearch.main(params['job'], params['location'], params['radius'])
+        return df.drop(['description'],axis=1)
+
+
 if __name__ == '__main__':
     app = IndeedJobSearch()
     app.launch(host='0.0.0.0', port=int(os.environ.get('PORT', '5000')))
