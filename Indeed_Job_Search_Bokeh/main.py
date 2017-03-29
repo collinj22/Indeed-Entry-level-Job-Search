@@ -28,9 +28,9 @@ location = TextInput(title="Location", value='')
 radius = TextInput(title="Radius", value='')
 search_button = Button(label="Search", button_type="success")
 search_button.on_click(search)
-# download_button = Button(label="Download", button_type="success")
-# download_button.callback = CustomJS(args=dict(source=source),
-#                                     code=open(join(dirname(__file__), "download.js")).read())
+download_button = Button(label="Download", button_type="success")
+download_button.callback = CustomJS(args=dict(source=source),
+                                     code=open(join(dirname(__file__), "download.js")).read())
 
 columns = [
     TableColumn(field="name", title="Job Search"),
