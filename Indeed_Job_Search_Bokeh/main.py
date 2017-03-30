@@ -35,7 +35,7 @@ download_button.callback = CustomJS(args=dict(source=source),
 columns = [
     TableColumn(field="name", title="Job Search"),
 ]
-data_table = DataTable(source=source, columns=columns, width=800, height=800)
+data_table = DataTable(source=source, columns=columns, width=800, height=600)
 controls = widgetbox(search_button,download_button)
 table = widgetbox(data_table)
 text = widgetbox(query, location, radius)
