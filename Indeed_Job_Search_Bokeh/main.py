@@ -36,7 +36,7 @@ columns = [
     TableColumn(field="name", title="Job Search"),
 ]
 data_table = DataTable(source=source, columns=columns, width=800)
-controls = widgetbox(search_button)
+controls = widgetbox(search_button,download_button)
 table = widgetbox(data_table)
 text = widgetbox(query, location, radius)
 curdoc().add_root(row(controls, text, table))
