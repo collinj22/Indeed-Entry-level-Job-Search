@@ -1,7 +1,7 @@
 from os.path import dirname, join
 
 import pandas as pd
-from bokeh.layouts import row, widgetbox
+from bokeh.layouts import row, widgetbox, column
 from bokeh.models import ColumnDataSource, CustomJS
 from bokeh.models.widgets import Slider, Button, DataTable, TableColumn, NumberFormatter, TextInput
 from bokeh.io import curdoc
@@ -14,6 +14,7 @@ source = ColumnDataSource(df)
 
 
 def search():
+    data_table.columns = [TableColumn(field="name", title="Loading")]
     df = IndeedSearch.main(query.value, location.value, radius.value)
     column_names = [
         TableColumn(field=c, title=c) for c in df.columns.values
@@ -33,11 +34,13 @@ download_button.callback = CustomJS(args=dict(source=source),
                                      code=open(join(dirname(__file__), "download.js")).read())
 
 columns = [
-    TableColumn(field="name", title="Job Search"),
+    TableColumn(field="name", title="Job Search")
 ]
-data_table = DataTable(source=source, columns=columns, width=800, height=600)
+data_table = DataTable(source=source, columns=columns, width=1100, height=600)
 controls = widgetbox(search_button,download_button)
 table = widgetbox(data_table)
 text = widgetbox(query, location, radius)
-curdoc().add_root(row(controls, text, table))
+left_column = column(text,controls)
+curdoc().add_root(row(left_column, table) )
 curdoc().title = "Indeed Job Search"
+
