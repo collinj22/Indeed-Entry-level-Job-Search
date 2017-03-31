@@ -7,8 +7,6 @@ from bokeh.models.widgets import Slider, Button, DataTable, TableColumn, NumberF
 from bokeh.io import curdoc
 import IndeedSearch
 
-# source = ColumnDataSource(data=dict())
-
 df = pd.DataFrame()
 source = ColumnDataSource(df)
 
@@ -32,7 +30,7 @@ radius = TextInput(title="Radius", value='')
 search_button = Button(label="Search", button_type="success", width=180)
 search_button.on_click(search)
 download_button = Button(label="Download", button_type="success", width=180)
-download_button.callback = CustomJS(args=dict(source=data_table.source), code=download.js)
+download_button.callback = CustomJS(args=dict(source=data_table.source), code='download.js')
 
 
 controls = widgetbox(search_button, download_button)
