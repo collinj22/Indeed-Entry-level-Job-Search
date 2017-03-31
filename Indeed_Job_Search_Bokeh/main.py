@@ -14,7 +14,7 @@ source = ColumnDataSource(df)
 
 
 def search():
-    data_table.columns = [TableColumn(field="name", title="Loading")]
+    data_table.columns = [TableColumn(field="name", title="Loading...")]
     df = IndeedSearch.main(query.value, location.value, radius.value)
     column_names = [
         TableColumn(field=c, title=c) for c in df.columns.values
@@ -24,23 +24,20 @@ def search():
     return
 
 
+columns = [TableColumn(field="name", title="Job Search")]
+data_table = DataTable(source=source, columns=columns, width=1100, height=500)
 query = TextInput(title="Job Title", value='')
 location = TextInput(title="Location", value='')
 radius = TextInput(title="Radius", value='')
-search_button = Button(label="Search", button_type="success")
+search_button = Button(label="Search", button_type="success", width=180)
 search_button.on_click(search)
-download_button = Button(label="Download", button_type="success")
-download_button.callback = CustomJS(args=dict(source=source),
-                                     code=open(join(dirname(__file__), "download.js")).read())
+download_button = Button(label="Download", button_type="success", width=180)
+download_button.callback = CustomJS(args=dict(source=data_table.source), code=download.js)
 
-columns = [
-    TableColumn(field="name", title="Job Search")
-]
-data_table = DataTable(source=source, columns=columns, width=1100, height=600)
-controls = widgetbox(search_button,download_button)
+
+controls = widgetbox(search_button, download_button)
 table = widgetbox(data_table)
 text = widgetbox(query, location, radius)
-left_column = column(text,controls)
-curdoc().add_root(row(left_column, table) )
+left_column = column(text, controls)
+curdoc().add_root(row(left_column, table))
 curdoc().title = "Indeed Job Search"
-
