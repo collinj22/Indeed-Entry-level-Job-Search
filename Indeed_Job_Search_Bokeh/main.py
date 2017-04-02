@@ -21,7 +21,7 @@ def search():
 
 
 columns = [TableColumn(field="name", title="Job Search")]
-data_table = DataTable(source=source, columns=columns, width=1100, height=500)
+data_table = DataTable(source=source, columns=columns, width=1100, height=500, editable=True)
 query = TextInput(title="Job Title", value='', width=200)
 location = TextInput(title="Location", value='', width=200)
 radius = TextInput(title="Radius", value='', width=200)
